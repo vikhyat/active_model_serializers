@@ -37,15 +37,21 @@ module ActiveModel
     end
 
     def serializable_object
+      serializer = nil
       @object.map do |item|
-        serializer_for(item).serializable_object
+        serializer ||= serializer_for(item)
+        serializer.object = item
+        serializer.serializable_object
       end
     end
     alias_method :serializable_array, :serializable_object
 
     def embedded_in_root_associations
+      serializer = nil
       @object.each_with_object({}) do |item, hash|
-        serializer_for(item).embedded_in_root_associations.each_pair do |type, objects|
+        serializer ||= serializer_for(item)
+        serializer.object = item
+        serializer.embedded_in_root_associations.each_pair do |type, objects|
           next if !objects || objects.flatten.empty?
 
           if hash.has_key?(type)
