@@ -287,7 +287,8 @@ module ActiveModel
       end
     end
 
-    attr_reader :object, :options
+    attr_reader :options
+    attr_accessor :object
 
     def initialize(object, options={})
       @object, @options = object, options

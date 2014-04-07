@@ -76,6 +76,7 @@ module ActiveModel
 
     private
     def _serializable_array
+      serializable = nil
       @object.map do |item|
         if @options.has_key? :each_serializer
           serializer = @options[:each_serializer]
@@ -83,7 +84,8 @@ module ActiveModel
           serializer = item.active_model_serializer
         end
 
-        serializable = serializer ? serializer.new(item, @options) : DefaultSerializer.new(item, @options)
+        serializable ||= serializer ? serializer.new(item, @options) : DefaultSerializer.new(item, @options)
+        serializable.object = item
 
         if serializable.respond_to?(:serializable_hash)
           serializable.serializable_hash
